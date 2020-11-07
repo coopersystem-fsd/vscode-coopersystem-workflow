@@ -1,13 +1,11 @@
-(function () {
-  const vscode = acquireVsCodeApi();
+window.vscode = acquireVsCodeApi();
 
-  function debug(msg, data) {
-    vscode.postMessage({
-      type: 'debug',
-      payload: {
-        label: msg,
-        data: data,
-      },
-    });
-  }
-})();
+function debug(msg, data) {
+  vscode.postMessage({
+    type: 'debug',
+    payload: {
+      label: msg,
+      data: data,
+    },
+  });
+}
