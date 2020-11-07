@@ -1,3 +1,4 @@
+import { GitExtension } from './api/git';
 import * as vscode from 'vscode';
 import createTimeEntry from './commands/create-time-entry';
 
@@ -9,7 +10,8 @@ export function activate(context: vscode.ExtensionContext) {
   const allocationProvider = new AllocationProvider(context.extensionUri);
 
   context.subscriptions.push(
-    vscode.window.registerWebviewViewProvider(QuickTimeEntryProvider.viewType, quickTimeEntryProvider)
+    vscode.window.registerWebviewViewProvider(QuickTimeEntryProvider.viewType, quickTimeEntryProvider),
+    vscode.window.registerWebviewViewProvider(AllocationProvider.viewType, allocationProvider)
   );
 
   context.subscriptions.push(

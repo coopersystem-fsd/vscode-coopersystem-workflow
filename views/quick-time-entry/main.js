@@ -15,16 +15,6 @@
     updateInputs(newState);
   }
 
-  function debug(msg, data) {
-    vscode.postMessage({
-      type: 'debug',
-      payload: {
-        label: msg,
-        data: data,
-      },
-    });
-  }
-
   function updateInputs(newState) {
     debug('updateInputs', newState);
 

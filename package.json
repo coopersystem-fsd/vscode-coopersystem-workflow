@@ -31,6 +31,11 @@
       "coopersystem-workflow": [
         {
           "type": "webview",
+          "id": "coopersystem-workflow-allocation",
+          "name": "Allocation"
+        },
+        {
+          "type": "webview",
           "id": "coopersystem-workflow-quick-time-entry",
           "name": "Quick Time Entry"
         }
@@ -97,6 +102,6 @@
     "vscode-test": "^1.4.0"
   },
   "dependencies": {
-    "@smartinsf/redmine-client": "^0.5.0"
+    "@coopersystem-fsd/workflow-sdk": "^0.2.0"
   }
 }

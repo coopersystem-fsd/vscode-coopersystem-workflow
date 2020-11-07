@@ -1,6 +1,6 @@
+import { CoopersystemWorkflowFactory } from '@coopersystem-fsd/workflow-sdk';
+import CoopersystemWorkflow from '@coopersystem-fsd/workflow-sdk/dist/workflow';
 import * as vscode from 'vscode';
-
-import { RedmineClient } from '@smartinsf/redmine-client';
 
 import { CoopersystemWorkflowConfig, TimeEntry } from '../api';
 import generateFileUri from '../utils/generateFileUri';
@@ -8,13 +8,6 @@ import getNonce from '../utils/nonce';
 
 // Create an instance passing your Redmine host and the username and password credentials
 // Only Basic authentication is supported for now
-
-enum IssueStatus {
-  pause = 10,
-  finished = 11,
-  homolog = 5,
-  executing = 3,
-}
 
 export class QuickTimeEntryProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = 'coopersystem-workflow-quick-time-entry';
@@ -27,12 +20,12 @@ export class QuickTimeEntryProvider implements vscode.WebviewViewProvider {
 
   private _view?: vscode.WebviewView;
 
-  private _redmineClient: RedmineClient;
+  private _cooperWorkflow: CoopersystemWorkflow;
 
   constructor(private readonly _extensionUri: vscode.Uri) {
     const config = vscode.workspace.getConfiguration('coopersystem', this._extensionUri) as CoopersystemWorkflowConfig;
 
-    this._redmineClient = new RedmineClient('http://redmine.coopersystem.com.br', config.ldap);
+    this._cooperWorkflow = CoopersystemWorkflowFactory.coWorker(config.ldap);
   }
 
   private _updateState(state: Partial<TimeEntry>) {
@@ -56,6 +49,25 @@ export class QuickTimeEntryProvider implements vscode.WebviewViewProvider {
   }
 
   private _fetchIssueWorkedHours() {
+    const workedHours = 2.21666666667;
+
+    this._cooperWorkflow.getLastIssueInExecutionWorkedHours().then(
+      (hours) => {
+        console.log('Hours', hours);
+      },
+      (reason) => {
+        console.log('Why?', reason);
+      }
+    );
+    // this._cooperWorkflow.getWorkedHoursToday().then(
+    //   (hours) => {
+    //     console.log('HOurs', hours);
+    //   },
+    // (reason) => {
+    //   console.log('Why?', { reason });
+    // }
+    // );
+
     // TODO: Fetch it
     setTimeout(() => {
       this._updateState({
@@ -65,22 +77,13 @@ export class QuickTimeEntryProvider implements vscode.WebviewViewProvider {
   }
 
   private _fetchLastIssueInExecution() {
-    this._redmineClient
-      .issues()
-      .list({
-        assignedToId: 'me',
-        statusId: IssueStatus.executing,
-        sort: 'updated_on:desc',
-        limit: 1,
-      })
-      .then((response) => {
-        const [lastIssue] = response.issues;
-        if (lastIssue) {
-          this._updateState({
-            issue: lastIssue.id.toString(),
-          });
-        }
-      });
+    this._cooperWorkflow.getLastIssueInExecution().then((issue) => {
+      if (issue) {
+        this._updateState({
+          issue: issue.id.toString(),
+        });
+      }
+    });
   }
 
   public _fetchData() {
@@ -108,8 +111,6 @@ export class QuickTimeEntryProvider implements vscode.WebviewViewProvider {
     webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
 
     webviewView.webview.onDidReceiveMessage((data) => {
-      console.log('Data', data);
-
       switch (data.type) {
         case 'state': {
           this._state = data.payload;
@@ -130,6 +131,7 @@ export class QuickTimeEntryProvider implements vscode.WebviewViewProvider {
   private _getHtmlForWebview(webview: vscode.Webview) {
     const styleResetUri = generateFileUri(webview, this._extensionUri, 'media', 'reset.css');
     const styleVSCodeUri = generateFileUri(webview, this._extensionUri, 'media', 'vscode.css');
+    const scriptCommonUri = generateFileUri(webview, this._extensionUri, 'media', 'common.js');
 
     const scriptUri = generateFileUri(webview, this._extensionUri, 'views', 'quick-time-entry', 'main.js');
     const styleMainUri = generateFileUri(webview, this._extensionUri, 'views', 'quick-time-entry', 'main.css');
@@ -154,15 +156,14 @@ export class QuickTimeEntryProvider implements vscode.WebviewViewProvider {
 				<link href="${styleVSCodeUri}" rel="stylesheet">
 				<link href="${styleMainUri}" rel="stylesheet">
 
-				<title>Cat Colors</title>
 			</head>
       <body>
         <div class="issue-time-inputs">
-          <div class="mr5">
+          <div class="issue-time-inputs-item" class="mr5">
             <label for="issue">Issue</label>
             <input id="issue" type="text">
           </div>
-          <div>
+          <div class="issue-time-inputs-item">
             <label for="hours">Time</label>
             <input id="hours" type="text">
           </div>
@@ -172,7 +173,7 @@ export class QuickTimeEntryProvider implements vscode.WebviewViewProvider {
           <input id="message" class="input" type="text">
         </div>
 
-
+        <script nonce="${nonce}" src="${scriptCommonUri}"></script>
 				<script nonce="${nonce}" src="${scriptUri}"></script>
 			</body>
 			</html>`;

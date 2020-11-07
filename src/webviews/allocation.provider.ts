@@ -3,7 +3,7 @@ import getNonce from '../utils/nonce';
 import generateFileUri from '../utils/generateFileUri';
 
 export class AllocationProvider implements vscode.WebviewViewProvider {
-  public static readonly viewType = '';
+  public static readonly viewType = 'coopersystem-workflow-allocation';
 
   private _view?: vscode.WebviewView;
 
@@ -16,15 +16,27 @@ export class AllocationProvider implements vscode.WebviewViewProvider {
   ) {
     this._view = webviewView;
 
-    webviewView.webview.options = {
+    this._view.webview.options = {
       enableScripts: true,
       localResourceRoots: [this._extensionUri],
     };
+
+    this._view.webview.html = this._getHtmlforWebView(this._view.webview);
+
+    this._view.webview.onDidReceiveMessage((data) => {
+      switch (data.type) {
+        case 'debug': {
+          console.log(data.payload.label, data.payload.data);
+          break;
+        }
+      }
+    });
   }
 
   private _getHtmlforWebView(webview: vscode.Webview) {
     const styleResetUri = generateFileUri(webview, this._extensionUri, 'media', 'reset.css');
     const styleVSCodeUri = generateFileUri(webview, this._extensionUri, 'media', 'vscode.css');
+    const scriptCommonUri = generateFileUri(webview, this._extensionUri, 'media', 'common.js');
 
     const scriptUri = generateFileUri(webview, this._extensionUri, 'views', 'allocation', 'main.js');
     const styleMainUri = generateFileUri(webview, this._extensionUri, 'views', 'allocation', 'main.css');
@@ -47,24 +59,11 @@ export class AllocationProvider implements vscode.WebviewViewProvider {
             <link href="${styleResetUri}" rel="stylesheet">
             <link href="${styleVSCodeUri}" rel="stylesheet">
             <link href="${styleMainUri}" rel="stylesheet">
-
-            <title>Cat Colors</title>
         </head>
         <body>
-            <div class="issue-time-inputs">
-            <div class="mr5">
-                <label for="issue">Issue</label>
-                <input id="issue" type="text">
-            </div>
-            <div>
-                <label for="hours">Time</label>
-                <input id="hours" type="text">
-            </div>
-            </div>
-            <div class="mtop5">
-                <label for="message">Time Message</label>
-                <input id="message" class="input" type="text">
-            </div>
+            <h1>Allocation</h1>
+
+            <script nonce="${nonce}" src="${scriptCommonUri}"></script>
             <script nonce="${nonce}" src="${scriptUri}"></script>
         </body>
         </html>`;

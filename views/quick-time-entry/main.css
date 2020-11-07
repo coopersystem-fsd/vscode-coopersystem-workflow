@@ -3,6 +3,10 @@
   flex-direction: row;
 }
 
+.issue-time-inputs-item {
+  flex: 1;
+}
+
 label {
   font-size: 10px;
 }
