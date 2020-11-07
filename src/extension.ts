@@ -20,6 +20,7 @@ export function activate(context: vscode.ExtensionContext) {
 
       createTimeEntry(timeEntry).then(() => {
         vscode.window.showInformationMessage(`Time entry for issue #${timeEntry.issue} created with success!`);
+        quickTimeEntryProvider.clearState();
       });
     })
   );

@@ -12,11 +12,13 @@ import getNonce from '../utils/nonce';
 export class QuickTimeEntryProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = 'coopersystem-workflow-quick-time-entry';
 
-  private _state: TimeEntry = {
+  private readonly _initialState: TimeEntry = {
     issue: '',
     hours: '',
     message: '',
-  };
+  }
+
+  private _state: TimeEntry = {...this._initialState};
 
   private _view?: vscode.WebviewView;
 
@@ -26,6 +28,10 @@ export class QuickTimeEntryProvider implements vscode.WebviewViewProvider {
     const config = vscode.workspace.getConfiguration('coopersystem', this._extensionUri) as CoopersystemWorkflowConfig;
 
     this._cooperWorkflow = CoopersystemWorkflowFactory.coWorker(config.ldap);
+  }
+
+  public clearState() {
+    this._updateState(this._initialState);
   }
 
   private _updateState(state: Partial<TimeEntry>) {
