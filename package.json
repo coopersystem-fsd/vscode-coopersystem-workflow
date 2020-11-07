@@ -38,6 +38,10 @@
           "type": "webview",
           "id": "coopersystem-workflow-quick-time-entry",
           "name": "Quick Time Entry"
+        },
+        {
+          "id": "redmine-explorer-my-issues",
+          "name": "Redmine Issues"
         }
       ]
     },
@@ -47,7 +51,7 @@
           "title": "Coopersystem",
           "id": "coopersystem-workflow",
           "name": "Coopersystem",
-          "icon": "logo.png"
+          "icon": "IconCooper.svg"
         }
       ]
     },
