@@ -5,16 +5,14 @@
 
 .issue-time-inputs-item {
   flex: 1;
+  display: block;
+  margin: 3px;
+}
+
+.message-input {
+  margin: 3px;
 }
 
 label {
   font-size: 10px;
-}
-
-.mr5 {
-  margin-right: 5px;
-}
-
-.mtop5 {
-  margin-top: 5px;
 }

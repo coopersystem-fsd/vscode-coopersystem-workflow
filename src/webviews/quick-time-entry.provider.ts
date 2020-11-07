@@ -153,7 +153,7 @@ export class QuickTimeEntryProvider implements vscode.WebviewViewProvider {
             <input id="hours" type="text">
           </div>
         </div>
-        <div class="mtop5">
+        <div class="message-input">
           <label for="message">Time Message</label>
           <input id="message" class="input" type="text">
         </div>
