@@ -1,0 +1,16 @@
+.issue-time-inputs {
+  display: flex;
+  flex-direction: row;
+}
+
+label {
+  font-size: 10px;
+}
+
+.mr5 {
+  margin-right: 5px;
+}
+
+.mtop5 {
+  margin-top: 5px;
+}
