@@ -49,31 +49,16 @@ export class QuickTimeEntryProvider implements vscode.WebviewViewProvider {
   }
 
   private _fetchIssueWorkedHours() {
-    const workedHours = 2.21666666667;
-
     this._cooperWorkflow.getLastIssueInExecutionWorkedHours().then(
       (hours) => {
-        console.log('Hours', hours);
+        this._updateState({
+          hours: hours.toFixed(2),
+        });
       },
       (reason) => {
-        console.log('Why?', reason);
+        vscode.window.showErrorMessage(`Failed getting data from allocation manager. ${reason}`);
       }
     );
-    // this._cooperWorkflow.getWorkedHoursToday().then(
-    //   (hours) => {
-    //     console.log('HOurs', hours);
-    //   },
-    // (reason) => {
-    //   console.log('Why?', { reason });
-    // }
-    // );
-
-    // TODO: Fetch it
-    setTimeout(() => {
-      this._updateState({
-        hours: '3.2',
-      });
-    }, 1200);
   }
 
   private _fetchLastIssueInExecution() {
