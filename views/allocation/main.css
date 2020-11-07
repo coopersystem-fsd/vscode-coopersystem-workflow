@@ -1,0 +1,11 @@
+#timers {
+  display: flex;
+  list-style-type: none;
+}
+
+.timers-item {
+  flex: 1;
+  margin: 3px;
+  font-size: 14px;
+  text-align: center;
+}

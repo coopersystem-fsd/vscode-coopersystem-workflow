@@ -61,7 +61,13 @@ export class AllocationProvider implements vscode.WebviewViewProvider {
             <link href="${styleMainUri}" rel="stylesheet">
         </head>
         <body>
-            <h1>Allocation</h1>
+            <ul id="timers">
+              <!-- dinamic loading -->
+            </ul>
+            <div>
+              <strong>Worked time: </strong>
+              <span id="worked-time"></span>
+            </div>
 
             <script nonce="${nonce}" src="${scriptCommonUri}"></script>
             <script nonce="${nonce}" src="${scriptUri}"></script>
