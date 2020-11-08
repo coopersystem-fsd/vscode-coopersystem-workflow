@@ -2,7 +2,7 @@
   "name": "coopersystem-workflow",
   "displayName": "Coopersystem Workflow",
   "description": "Control the basic workflow for co-workers and interns from FSD.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "icon": "logo.png",
   "engines": {
     "vscode": "^1.50.0"

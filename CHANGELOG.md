@@ -1,9 +1,20 @@
-# Change Log
-
-All notable changes to the "coopersystem-workflow" extension will be documented in this file.
-
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+# Changelog
 
 ## [Unreleased]
 
-- Initial release
+## [0.3.0] - 2020-11-08
+### Added
+- Changelog
+
+## [0.2.0] - 2020-11-08
+### Added
+- Icon
+
+### Changed
+- Improve docs
+
+## [0.1.0] - 2020-11-08
+### Added
+- Create quick time entry
+- See allocation data
+- See real time worked hours on status bar
