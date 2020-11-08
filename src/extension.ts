@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 
 import { CoopersystemWorkflowFactory } from "@coopersystem-fsd/workflow-sdk";
 
-import { CoopersystemWorkflowConfig } from "./api";
+import { AllocationState, CoopersystemWorkflowConfig } from "./api";
 import { AllocationProvider } from "./webviews/allocation.provider";
 import { QuickTimeEntryProvider } from "./webviews/quick-time-entry.provider";
 
@@ -63,9 +63,13 @@ export function activate(context: vscode.ExtensionContext) {
     )
   );
 
+  allocationProvider.eventEmiter.event(() => {
+    updateStatusBarItem(myStatusBarItem, context.globalState.get(AllocationProvider.viewType) as AllocationState);
+  });
+
   updateStatusBarItem(
     myStatusBarItem,
-    context.globalState.get(AllocationProvider.viewType)
+    context.globalState.get(AllocationProvider.viewType) as AllocationState
   );
 }
 

@@ -1,5 +1,8 @@
 import { WorkspaceConfiguration } from "vscode";
 
+export interface AllocationState {
+  entries: Date[];
+}
 export interface TimeEntry {
   hours: string;
   issue: string;

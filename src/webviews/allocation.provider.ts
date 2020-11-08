@@ -4,15 +4,15 @@ import CoopersystemWorkflow from "@coopersystem-fsd/workflow-sdk/dist/workflow";
 
 import generateFileUri from "../utils/generateFileUri";
 import getNonce from "../utils/nonce";
+import { AllocationState } from "../api";
 
-interface AllocationState {
-  entries: Date[];
-}
 
 export class AllocationProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = "coopersystem-workflow-allocation";
 
   private _view?: vscode.WebviewView;
+
+  public eventEmiter: vscode.EventEmitter<any>;
 
   private _state: AllocationState = {
     entries: [],
@@ -25,6 +25,7 @@ export class AllocationProvider implements vscode.WebviewViewProvider {
     private readonly _cooperWorkflow: CoopersystemWorkflow
   ) {
     this._extensionUri = this._context.extensionUri;
+    this.eventEmiter = new vscode.EventEmitter();
   }
 
   private _updateState(state: Partial<AllocationState>) {
@@ -35,8 +36,7 @@ export class AllocationProvider implements vscode.WebviewViewProvider {
 
     this._context.globalState.update(AllocationProvider.viewType, this._state);
 
-    // TODO: Emit event when state changes
-    // -> update statusbar
+    this.eventEmiter.fire('changed');
 
     this._reloadViewState();
   }
