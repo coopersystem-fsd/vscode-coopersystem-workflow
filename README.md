@@ -2,12 +2,7 @@
 
 ## TODO
 
-- Workflow-sdk-node-js
-  - Integrar edesenv
-  - Publicar npm
-- Usar Workflow-sdk-node-js
-- Exibir webview de alocação
+- Integrar workflow-sdk em todas as funções
 - Recarregar dados de alocação e quick time entry ao entrar na activityBar
 - Verificar possibilidade de embedar extensão do redmine
-- Limpar campos do quick time ao criar entrada de tempo
-- Alterar ícone
+- Vericar se o ícone está com as definições certas: https://code.visualstudio.com/api/references/contribution-points#Icon-specifications

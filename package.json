@@ -23,7 +23,7 @@
     "commands": [
       {
         "command": "coopersystemWorkflow.createTimeEntry",
-        "title": "Coopersystem Workflow: Create time entry",
+        "title": "Create time entry",
         "icon": "$(check)"
       }
     ],
