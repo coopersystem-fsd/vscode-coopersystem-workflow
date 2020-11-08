@@ -21,10 +21,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.extensionUri,
     cooperWorkflow
   );
-  const allocationProvider = new AllocationProvider(
-    context.extensionUri,
-    cooperWorkflow
-  );
+  const allocationProvider = new AllocationProvider(context, cooperWorkflow);
 
   const myStatusBarItem = vscode.window.createStatusBarItem(
     vscode.StatusBarAlignment.Left,
@@ -66,7 +63,10 @@ export function activate(context: vscode.ExtensionContext) {
     )
   );
 
-  updateStatusBarItem(myStatusBarItem);
+  updateStatusBarItem(
+    myStatusBarItem,
+    context.globalState.get(AllocationProvider.viewType)
+  );
 }
 
 export function deactivate() {}

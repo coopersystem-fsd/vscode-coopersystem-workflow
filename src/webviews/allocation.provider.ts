@@ -18,10 +18,14 @@ export class AllocationProvider implements vscode.WebviewViewProvider {
     entries: [],
   };
 
+  private _extensionUri: vscode.Uri;
+
   constructor(
-    private readonly _extensionUri: vscode.Uri,
+    private readonly _context: vscode.ExtensionContext,
     private readonly _cooperWorkflow: CoopersystemWorkflow
-  ) {}
+  ) {
+    this._extensionUri = this._context.extensionUri;
+  }
 
   private _updateState(state: Partial<AllocationState>) {
     this._state = {
@@ -29,10 +33,17 @@ export class AllocationProvider implements vscode.WebviewViewProvider {
       ...state,
     };
 
+    this._context.globalState.update(AllocationProvider.viewType, this._state);
+
+    // TODO: Emit event when state changes
+    // -> update statusbar
+
     this._reloadViewState();
   }
 
   private _fetchData() {
+    // Reload view state with existent state before request checkpoints again
+    this._reloadViewState();
     this._cooperWorkflow.getCheckPointEntriesToday().then((entries) => {
       this._updateState({
         entries,
@@ -138,11 +149,6 @@ export class AllocationProvider implements vscode.WebviewViewProvider {
             <ul id="timers">
               <!-- dinamic loading -->
             </ul>
-            <div>
-              <strong>Worked time: </strong>
-              <span id="worked-time"></span>
-            </div>
-
             <script nonce="${nonce}" src="${scriptCommonUri}"></script>
             <script nonce="${nonce}" src="${scriptUri}"></script>
         </body>
