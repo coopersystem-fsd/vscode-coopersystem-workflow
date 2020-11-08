@@ -1,90 +1,57 @@
 import * as vscode from "vscode";
-/*
-function getWorkedTime(state: any) {
-  let time = 0;
-  if (!state[FIRST_CHECKIN]) {
+import { AllocationState } from "./api";
+
+function convertDateToHours(date: Date) {
+  return date.getHours() + date.getMinutes() / 60;
+}
+
+function getWorkedHoursToday(entries: Date[]) : number {
+  if(entries.length === 0) {
     return 0;
   }
-  if (
-    !state[FIRST_CHECKOUT] &&
-    !state[SECOND_CHECKIN] &&
-    !state[SECOND_CHECKOUT]
-  ) {
-    const difference = calculateDifferenceInMillis(
-      state[FIRST_CHECKIN],
-      getCurrentDate()
-    );
-    return msToTime(difference);
+  const isOdd = entries.length % 2 > 0;
+  if(isOdd) {
+    entries.push(new Date(Date.now()));
   }
-  if (!state[SECOND_CHECKIN] && !state[SECOND_CHECKOUT]) {
-    const difference = calculateDifferenceInMillis(
-      state[FIRST_CHECKIN],
-      state[FIRST_CHECKOUT]
-    );
-    return msToTime(difference);
-  }
-  if (!state[SECOND_CHECKOUT]) {
-    const firstDifference = calculateDifferenceInMillis(
-      state[FIRST_CHECKIN],
-      state[FIRST_CHECKOUT]
-    );
-    const secondDifference = calculateDifferenceInMillis(
-      state[SECOND_CHECKIN],
-      getCurrentDate()
-    );
-    return msToTime(firstDifference + secondDifference);
-  }
-  const firstDifference = calculateDifferenceInMillis(
-    state[FIRST_CHECKIN],
-    state[FIRST_CHECKOUT]
-  );
-  const secondDifference = calculateDifferenceInMillis(
-    state[SECOND_CHECKIN],
-    state[SECOND_CHECKOUT]
-  );
-  return msToTime(firstDifference + secondDifference);
-}
-*/
-
-function calculateDifferenceInMillis(dateA: Date, dateB: Date) {
-  let start_date = Math.min(dateA.getTime(), dateB.getTime());
-  let end_date = Math.max(dateA.getTime(), dateB.getTime());
-  let difference = end_date - start_date;
-  return difference;
+  return entries.reduce((prev, next) => Math.abs(prev - convertDateToHours(next)), 0);
 }
 
-function formatDate(date: Date) {
-  if (!date) {
-    return "";
-  }
-  let hours = date.getHours();
-  let minutes = date.getMinutes();
-  let strHours = hours < 10 ? "0" + hours : hours;
-  let strMinutes = minutes < 10 ? "0" + minutes : minutes;
-  return `${strHours}:${strMinutes}`;
+function convertHoursToMilliseconds(hours: number) {
+  return hours * (60 * 60 * 1000);
 }
 
 function msToTime(duration: number) {
-  let seconds = Math.floor((duration / 1000) % 60);
   let minutes = Math.floor((duration / (1000 * 60)) % 60);
   let hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
 
   let strHours = hours < 10 ? "0" + hours : hours;
   let strMinutes = minutes < 10 ? "0" + minutes : minutes;
-  let strSeconds = seconds < 10 ? "0" + seconds : seconds;
 
-  return strHours + ":" + strMinutes + ":" + strSeconds;
+  return strHours + ":" + strMinutes;
 }
+     
+let timer: any = null;
 
-function getCurrentDate() {
-  return new Date();
+function updateTime(timestamp: number, myStatusBarItem: vscode.StatusBarItem) {
+  const formattedTime = msToTime(timestamp);
+  myStatusBarItem.text = `$(clock) ${formattedTime}`;
+  myStatusBarItem.show();
 }
 
 export function updateStatusBarItem(
   myStatusBarItem: vscode.StatusBarItem,
-  allocationState: any
+  allocationState: AllocationState
 ): void {
-  console.log("allocationState", allocationState);
-  myStatusBarItem.text = `$(clock) 00:00`;
-  myStatusBarItem.show();
+  clearInterval(timer);
+  const workedHours = getWorkedHoursToday(allocationState.entries.map((dateString) => new Date(dateString)));
+
+  let timestamp = convertHoursToMilliseconds(workedHours)
+
+  updateTime(timestamp, myStatusBarItem);
+
+  timer = setInterval(() => {
+    timestamp += 60000;
+    updateTime(timestamp, myStatusBarItem);
+  }, 60000);
+
 }
