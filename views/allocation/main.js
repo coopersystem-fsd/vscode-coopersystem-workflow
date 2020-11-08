@@ -11,20 +11,22 @@
     [SECOND_CHECKOUT]: "",
   };
 
+  vscode.setState({
+    entries: [],
+  });
+
+  vscode.postMessage({
+    type: "onLoad",
+  });
+
   function updateAllocations(state) {
     let htmlContent = "";
-    htmlContent += `<li class="timers-item">${formatDate(
-      state[FIRST_CHECKIN]
-    )}<li>`;
-    htmlContent += `<li class="timers-item">${formatDate(
-      state[FIRST_CHECKOUT]
-    )}<li>`;
-    htmlContent += `<li class="timers-item">${formatDate(
-      state[SECOND_CHECKIN]
-    )}<li>`;
-    htmlContent += `<li class="timers-item">${formatDate(
-      state[SECOND_CHECKOUT]
-    )}<li>`;
+    state.entries.forEach((entry) => {
+      htmlContent += `<li class="timers-item">${formatDate(
+        new Date(entry)
+      )}<li>`;
+    });
+
     document.getElementById("timers").innerHTML = htmlContent;
   }
 
@@ -36,6 +38,23 @@
   function getCurrentDate() {
     return new Date();
   }
+
+  function updateState(newState) {
+    vscode.setState(newState);
+    updateAllocations(newState);
+  }
+
+  // Handle messages sent from the extension to the webview
+  window.addEventListener("message", (event) => {
+    const message = event.data; // The json data that the extension sent
+    debug("msg", message);
+    switch (message.type) {
+      case "updateState": {
+        updateState(message.payload);
+        break;
+      }
+    }
+  });
 
   function getWorkedTime(state) {
     let time = 0;
@@ -113,7 +132,6 @@
   }
 
   setInterval(() => {
-    updateAllocations(mockedState);
     updateWorkedTimeField(mockedState);
   }, 1000);
 })();

@@ -1,11 +1,15 @@
 #timers {
   display: flex;
+  padding: 0;
+  margin: 0;
   list-style-type: none;
+  justify-content: flex-start;
 }
 
 .timers-item {
-  flex: 1;
   margin: 3px;
   font-size: 14px;
-  text-align: center;
+  background: var(--vscode-button-background);
+  padding: 3px;
+  border-radius: 3px;
 }

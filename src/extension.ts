@@ -1,9 +1,12 @@
 import * as vscode from "vscode";
 
-import { QuickTimeEntryProvider } from "./webviews/quick-time-entry.provider";
-import { AllocationProvider } from "./webviews/allocation.provider";
-import { CoopersystemWorkflowConfig } from "./api";
 import { CoopersystemWorkflowFactory } from "@coopersystem-fsd/workflow-sdk";
+
+import { CoopersystemWorkflowConfig } from "./api";
+import { AllocationProvider } from "./webviews/allocation.provider";
+import { QuickTimeEntryProvider } from "./webviews/quick-time-entry.provider";
+
+import { updateStatusBarItem } from "./statusbar";
 
 export function activate(context: vscode.ExtensionContext) {
   const config = vscode.workspace.getConfiguration(
@@ -18,7 +21,15 @@ export function activate(context: vscode.ExtensionContext) {
     context.extensionUri,
     cooperWorkflow
   );
-  const allocationProvider = new AllocationProvider(context.extensionUri);
+  const allocationProvider = new AllocationProvider(
+    context.extensionUri,
+    cooperWorkflow
+  );
+
+  const myStatusBarItem = vscode.window.createStatusBarItem(
+    vscode.StatusBarAlignment.Left,
+    100
+  );
 
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
@@ -28,7 +39,8 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.window.registerWebviewViewProvider(
       AllocationProvider.viewType,
       allocationProvider
-    )
+    ),
+    myStatusBarItem
   );
 
   context.subscriptions.push(
@@ -53,6 +65,8 @@ export function activate(context: vscode.ExtensionContext) {
       }
     )
   );
+
+  updateStatusBarItem(myStatusBarItem);
 }
 
 export function deactivate() {}

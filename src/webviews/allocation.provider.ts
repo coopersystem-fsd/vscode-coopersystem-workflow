@@ -1,13 +1,56 @@
 import * as vscode from "vscode";
-import getNonce from "../utils/nonce";
+
+import CoopersystemWorkflow from "@coopersystem-fsd/workflow-sdk/dist/workflow";
+
 import generateFileUri from "../utils/generateFileUri";
+import getNonce from "../utils/nonce";
+
+interface AllocationState {
+  entries: Date[];
+}
 
 export class AllocationProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = "coopersystem-workflow-allocation";
 
   private _view?: vscode.WebviewView;
 
-  constructor(private readonly _extensionUri: vscode.Uri) {}
+  private _state: AllocationState = {
+    entries: [],
+  };
+
+  constructor(
+    private readonly _extensionUri: vscode.Uri,
+    private readonly _cooperWorkflow: CoopersystemWorkflow
+  ) {}
+
+  private _updateState(state: Partial<AllocationState>) {
+    this._state = {
+      ...this._state,
+      ...state,
+    };
+
+    this._reloadViewState();
+  }
+
+  private _fetchData() {
+    this._cooperWorkflow.getCheckPointEntriesToday().then((entries) => {
+      this._updateState({
+        entries,
+      });
+    });
+  }
+
+  private _reloadViewState() {
+    console.log("_reloadViewState", {
+      type: "updateState",
+      payload: this._state,
+    });
+
+    this._view?.webview.postMessage({
+      type: "updateState",
+      payload: this._state,
+    });
+  }
 
   public resolveWebviewView(
     webviewView: vscode.WebviewView,
@@ -27,6 +70,10 @@ export class AllocationProvider implements vscode.WebviewViewProvider {
       switch (data.type) {
         case "debug": {
           console.log(data.payload.label, data.payload.data);
+          break;
+        }
+        case "onLoad": {
+          this._fetchData();
           break;
         }
       }
