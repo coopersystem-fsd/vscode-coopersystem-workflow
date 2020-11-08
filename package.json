@@ -1,11 +1,17 @@
 {
   "name": "coopersystem-workflow",
   "displayName": "Coopersystem Workflow",
-  "description": "",
-  "version": "0.0.1",
+  "description": "Control the basic workflow for co-workers and interns from FSD.",
+  "version": "0.2.0",
+  "icon": "logo.png",
   "engines": {
     "vscode": "^1.50.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/coopersystem-fsd/vscode-coopersystem-workflow"
+  },
+  "publisher": "Coopersystem-FSD",
   "categories": [
     "Other"
   ],
@@ -117,6 +123,7 @@
   },
   "dependencies": {
     "@coopersystem-fsd/workflow-sdk": "^0.3.2",
+    "@types/tough-cookie": "^4.0.0",
     "execa": "^4.1.0"
   }
 }

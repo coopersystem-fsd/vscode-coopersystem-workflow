@@ -42,7 +42,7 @@ You should see a screen similar to this:
 
 ![ext screen](./images/ext-screen.png)
 
-Now you can checkin, checkout and create a quick time entry.
+Now you can create a quick time entry, see your checkin/checkout data and your worked hours.
 
 ## TODO
 
