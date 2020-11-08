@@ -1,13 +1,12 @@
+import * as vscode from 'vscode';
+
 import { CoopersystemWorkflowFactory } from '@coopersystem-fsd/workflow-sdk';
 import CoopersystemWorkflow from '@coopersystem-fsd/workflow-sdk/dist/workflow';
-import * as vscode from 'vscode';
 
 import { CoopersystemWorkflowConfig, TimeEntry } from '../api';
 import generateFileUri from '../utils/generateFileUri';
+import getLastCommitMessage from '../utils/getLastCommitMessage';
 import getNonce from '../utils/nonce';
-
-// Create an instance passing your Redmine host and the username and password credentials
-// Only Basic authentication is supported for now
 
 export class QuickTimeEntryProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = 'coopersystem-workflow-quick-time-entry';
@@ -16,9 +15,9 @@ export class QuickTimeEntryProvider implements vscode.WebviewViewProvider {
     issue: '',
     hours: '',
     message: '',
-  }
+  };
 
-  private _state: TimeEntry = {...this._initialState};
+  private _state: TimeEntry = { ...this._initialState };
 
   private _view?: vscode.WebviewView;
 
@@ -46,12 +45,10 @@ export class QuickTimeEntryProvider implements vscode.WebviewViewProvider {
   }
 
   private _fetchLastCommitMessage() {
-    // TODO: Fetch last commit
-    setTimeout(() => {
-      this._updateState({
-        message: 'Add new styles to home page',
-      });
-    }, 1000);
+    getLastCommitMessage().then(
+      (message) => this._updateState({ message }),
+      (reason) => console.log(`Error: ${reason}`)
+    );
   }
 
   private _fetchIssueWorkedHours() {
@@ -160,7 +157,7 @@ export class QuickTimeEntryProvider implements vscode.WebviewViewProvider {
           </div>
         </div>
         <div class="message-input">
-          <label for="message">Time Message</label>
+          <label for="message">Message</label>
           <input id="message" class="input" type="text">
         </div>
 
