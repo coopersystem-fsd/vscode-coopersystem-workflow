@@ -1,4 +1,4 @@
-import { WorkspaceConfiguration } from 'vscode';
+import { WorkspaceConfiguration } from "vscode";
 
 export interface TimeEntry {
   hours: string;
@@ -7,8 +7,8 @@ export interface TimeEntry {
 }
 
 export enum UserType {
-  coworker = 'coWorker',
-  intern = 'intern',
+  coworker = "coWorker",
+  intern = "intern",
 }
 
 export interface CoopersystemWorkflowConfig extends WorkspaceConfiguration {

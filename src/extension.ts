@@ -1,36 +1,57 @@
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
 
-import { QuickTimeEntryProvider } from './webviews/quick-time-entry.provider';
-import { AllocationProvider } from './webviews/allocation.provider';
-import { CoopersystemWorkflowConfig } from './api';
-import { CoopersystemWorkflowFactory } from '@coopersystem-fsd/workflow-sdk';
+import { QuickTimeEntryProvider } from "./webviews/quick-time-entry.provider";
+import { AllocationProvider } from "./webviews/allocation.provider";
+import { CoopersystemWorkflowConfig } from "./api";
+import { CoopersystemWorkflowFactory } from "@coopersystem-fsd/workflow-sdk";
 
 export function activate(context: vscode.ExtensionContext) {
-  const config = vscode.workspace.getConfiguration('coopersystem', context.extensionUri) as CoopersystemWorkflowConfig;
-  const cooperWorkflow = CoopersystemWorkflowFactory[config.userType](config.ldap);
+  const config = vscode.workspace.getConfiguration(
+    "coopersystem",
+    context.extensionUri
+  ) as CoopersystemWorkflowConfig;
+  const cooperWorkflow = CoopersystemWorkflowFactory[config.userType](
+    config.ldap
+  );
 
-  const quickTimeEntryProvider = new QuickTimeEntryProvider(context.extensionUri, cooperWorkflow);
+  const quickTimeEntryProvider = new QuickTimeEntryProvider(
+    context.extensionUri,
+    cooperWorkflow
+  );
   const allocationProvider = new AllocationProvider(context.extensionUri);
 
   context.subscriptions.push(
-    vscode.window.registerWebviewViewProvider(QuickTimeEntryProvider.viewType, quickTimeEntryProvider),
-    vscode.window.registerWebviewViewProvider(AllocationProvider.viewType, allocationProvider)
+    vscode.window.registerWebviewViewProvider(
+      QuickTimeEntryProvider.viewType,
+      quickTimeEntryProvider
+    ),
+    vscode.window.registerWebviewViewProvider(
+      AllocationProvider.viewType,
+      allocationProvider
+    )
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('coopersystemWorkflow.createTimeEntry', () => {
-      const { issue, hours, message } = quickTimeEntryProvider.getTimeEntry();
+    vscode.commands.registerCommand(
+      "coopersystemWorkflow.createTimeEntry",
+      () => {
+        const { issue, hours, message } = quickTimeEntryProvider.getTimeEntry();
 
-      cooperWorkflow.createTimeEntry(+issue, +hours, message).then(
-        () => {
-          vscode.window.showInformationMessage(`Time entry for issue #${issue} has been created succesfully!`);
-          quickTimeEntryProvider.clearState();
-        },
-        (reason) => {
-          vscode.window.showErrorMessage(`Failed to create time entry for #${issue}! ${reason}`);
-        }
-      );
-    })
+        cooperWorkflow.createTimeEntry(+issue, +hours, message).then(
+          () => {
+            vscode.window.showInformationMessage(
+              `Time entry for issue #${issue} has been created succesfully!`
+            );
+            quickTimeEntryProvider.clearState();
+          },
+          (reason) => {
+            vscode.window.showErrorMessage(
+              `Failed to create time entry for #${issue}! ${reason}`
+            );
+          }
+        );
+      }
+    )
   );
 }
 

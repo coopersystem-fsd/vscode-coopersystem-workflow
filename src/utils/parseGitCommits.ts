@@ -1,4 +1,4 @@
-import { Commit } from '../api/git';
+import { Commit } from "../api/git";
 
 const commitRegex = /([0-9a-f]{40})\n(.*)\n(.*)\n(.*)\n(.*)\n(.*)(?:\n([^]*?))?(?:\x00)/gm;
 
@@ -24,9 +24,18 @@ export default function (data: string): Commit[] {
       break;
     }
 
-    [, ref, authorName, authorEmail, authorDate, commitDate, parents, message] = match;
+    [
+      ,
+      ref,
+      authorName,
+      authorEmail,
+      authorDate,
+      commitDate,
+      parents,
+      message,
+    ] = match;
 
-    if (message[message.length - 1] === '\n') {
+    if (message[message.length - 1] === "\n") {
       message = message.substr(0, message.length - 1);
     }
 
@@ -34,7 +43,7 @@ export default function (data: string): Commit[] {
     commits.push({
       hash: ` ${ref}`.substr(1),
       message: ` ${message}`.substr(1),
-      parents: parents ? parents.split(' ') : [],
+      parents: parents ? parents.split(" ") : [],
       authorDate: new Date(Number(authorDate) * 1000),
       authorName: ` ${authorName}`.substr(1),
       authorEmail: ` ${authorEmail}`.substr(1),

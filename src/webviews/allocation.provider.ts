@@ -1,9 +1,9 @@
-import * as vscode from 'vscode';
-import getNonce from '../utils/nonce';
-import generateFileUri from '../utils/generateFileUri';
+import * as vscode from "vscode";
+import getNonce from "../utils/nonce";
+import generateFileUri from "../utils/generateFileUri";
 
 export class AllocationProvider implements vscode.WebviewViewProvider {
-  public static readonly viewType = 'coopersystem-workflow-allocation';
+  public static readonly viewType = "coopersystem-workflow-allocation";
 
   private _view?: vscode.WebviewView;
 
@@ -25,7 +25,7 @@ export class AllocationProvider implements vscode.WebviewViewProvider {
 
     this._view.webview.onDidReceiveMessage((data) => {
       switch (data.type) {
-        case 'debug': {
+        case "debug": {
           console.log(data.payload.label, data.payload.data);
           break;
         }
@@ -34,12 +34,39 @@ export class AllocationProvider implements vscode.WebviewViewProvider {
   }
 
   private _getHtmlforWebView(webview: vscode.Webview) {
-    const styleResetUri = generateFileUri(webview, this._extensionUri, 'media', 'reset.css');
-    const styleVSCodeUri = generateFileUri(webview, this._extensionUri, 'media', 'vscode.css');
-    const scriptCommonUri = generateFileUri(webview, this._extensionUri, 'media', 'common.js');
+    const styleResetUri = generateFileUri(
+      webview,
+      this._extensionUri,
+      "media",
+      "reset.css"
+    );
+    const styleVSCodeUri = generateFileUri(
+      webview,
+      this._extensionUri,
+      "media",
+      "vscode.css"
+    );
+    const scriptCommonUri = generateFileUri(
+      webview,
+      this._extensionUri,
+      "media",
+      "common.js"
+    );
 
-    const scriptUri = generateFileUri(webview, this._extensionUri, 'views', 'allocation', 'main.js');
-    const styleMainUri = generateFileUri(webview, this._extensionUri, 'views', 'allocation', 'main.css');
+    const scriptUri = generateFileUri(
+      webview,
+      this._extensionUri,
+      "views",
+      "allocation",
+      "main.js"
+    );
+    const styleMainUri = generateFileUri(
+      webview,
+      this._extensionUri,
+      "views",
+      "allocation",
+      "main.css"
+    );
 
     const nonce = getNonce();
 

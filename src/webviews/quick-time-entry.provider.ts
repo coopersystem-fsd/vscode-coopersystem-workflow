@@ -1,26 +1,29 @@
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
 
-import CoopersystemWorkflow from '@coopersystem-fsd/workflow-sdk/dist/workflow';
+import CoopersystemWorkflow from "@coopersystem-fsd/workflow-sdk/dist/workflow";
 
-import { TimeEntry } from '../api';
-import generateFileUri from '../utils/generateFileUri';
-import getLastCommitMessage from '../utils/getLastCommitMessage';
-import getNonce from '../utils/nonce';
+import { TimeEntry } from "../api";
+import generateFileUri from "../utils/generateFileUri";
+import getLastCommitMessage from "../utils/getLastCommitMessage";
+import getNonce from "../utils/nonce";
 
 export class QuickTimeEntryProvider implements vscode.WebviewViewProvider {
-  public static readonly viewType = 'coopersystem-workflow-quick-time-entry';
+  public static readonly viewType = "coopersystem-workflow-quick-time-entry";
 
   private readonly _initialState: TimeEntry = {
-    issue: '',
-    hours: '',
-    message: '',
+    issue: "",
+    hours: "",
+    message: "",
   };
 
   private _state: TimeEntry = { ...this._initialState };
 
   private _view?: vscode.WebviewView;
 
-  constructor(private readonly _extensionUri: vscode.Uri, private readonly _cooperWorkflow: CoopersystemWorkflow) {}
+  constructor(
+    private readonly _extensionUri: vscode.Uri,
+    private readonly _cooperWorkflow: CoopersystemWorkflow
+  ) {}
 
   public clearState() {
     this._updateState(this._initialState);
@@ -37,7 +40,7 @@ export class QuickTimeEntryProvider implements vscode.WebviewViewProvider {
 
   private _reloadViewState() {
     this._view?.webview.postMessage({
-      type: 'updateState',
+      type: "updateState",
       payload: this._state,
     });
   }
@@ -57,7 +60,9 @@ export class QuickTimeEntryProvider implements vscode.WebviewViewProvider {
         });
       },
       (reason) => {
-        vscode.window.showErrorMessage(`Failed getting data from allocation manager. ${reason}`);
+        vscode.window.showErrorMessage(
+          `Failed getting data from allocation manager. ${reason}`
+        );
       }
     );
   }
@@ -96,15 +101,15 @@ export class QuickTimeEntryProvider implements vscode.WebviewViewProvider {
 
     webviewView.webview.onDidReceiveMessage((data) => {
       switch (data.type) {
-        case 'state': {
+        case "state": {
           this._state = data.payload;
           break;
         }
-        case 'debug': {
+        case "debug": {
           console.log(data.payload.label, data.payload.data);
           break;
         }
-        case 'onLoad': {
+        case "onLoad": {
           this._fetchData();
           break;
         }
@@ -117,12 +122,39 @@ export class QuickTimeEntryProvider implements vscode.WebviewViewProvider {
   }
 
   private _getHtmlForWebview(webview: vscode.Webview) {
-    const styleResetUri = generateFileUri(webview, this._extensionUri, 'media', 'reset.css');
-    const styleVSCodeUri = generateFileUri(webview, this._extensionUri, 'media', 'vscode.css');
-    const scriptCommonUri = generateFileUri(webview, this._extensionUri, 'media', 'common.js');
+    const styleResetUri = generateFileUri(
+      webview,
+      this._extensionUri,
+      "media",
+      "reset.css"
+    );
+    const styleVSCodeUri = generateFileUri(
+      webview,
+      this._extensionUri,
+      "media",
+      "vscode.css"
+    );
+    const scriptCommonUri = generateFileUri(
+      webview,
+      this._extensionUri,
+      "media",
+      "common.js"
+    );
 
-    const scriptUri = generateFileUri(webview, this._extensionUri, 'views', 'quick-time-entry', 'main.js');
-    const styleMainUri = generateFileUri(webview, this._extensionUri, 'views', 'quick-time-entry', 'main.css');
+    const scriptUri = generateFileUri(
+      webview,
+      this._extensionUri,
+      "views",
+      "quick-time-entry",
+      "main.js"
+    );
+    const styleMainUri = generateFileUri(
+      webview,
+      this._extensionUri,
+      "views",
+      "quick-time-entry",
+      "main.css"
+    );
 
     // Use a nonce to only allow a specific script to be run.
     const nonce = getNonce();
