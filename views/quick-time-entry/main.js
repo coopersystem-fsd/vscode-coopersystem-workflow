@@ -21,6 +21,10 @@
     }
   }
 
+  vscode.postMessage({
+    type: 'onLoad',
+  });
+
   document.querySelectorAll('input').forEach((el) => {
     el.addEventListener('change', (event) => {
       const element = event.target;

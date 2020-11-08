@@ -38,6 +38,11 @@ export class QuickTimeEntryProvider implements vscode.WebviewViewProvider {
       ...this._state,
       ...state,
     };
+
+    this._reloadViewState();
+  }
+
+  private _reloadViewState() {
     this._view?.webview.postMessage({
       type: 'updateState',
       payload: this._state,
@@ -87,8 +92,6 @@ export class QuickTimeEntryProvider implements vscode.WebviewViewProvider {
   ) {
     this._view = webviewView;
 
-    this._fetchData();
-
     webviewView.webview.options = {
       // Allow scripts in the webview
       enableScripts: true,
@@ -106,6 +109,10 @@ export class QuickTimeEntryProvider implements vscode.WebviewViewProvider {
         }
         case 'debug': {
           console.log(data.payload.label, data.payload.data);
+          break;
+        }
+        case 'onLoad': {
+          this._fetchData();
           break;
         }
       }

@@ -1,4 +1,3 @@
-import { GitExtension } from './api/git';
 import * as vscode from 'vscode';
 import createTimeEntry from './commands/create-time-entry';
 
