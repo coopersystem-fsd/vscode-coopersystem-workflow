@@ -1,9 +1,8 @@
 import * as vscode from 'vscode';
 
-import { CoopersystemWorkflowFactory } from '@coopersystem-fsd/workflow-sdk';
 import CoopersystemWorkflow from '@coopersystem-fsd/workflow-sdk/dist/workflow';
 
-import { CoopersystemWorkflowConfig, TimeEntry } from '../api';
+import { TimeEntry } from '../api';
 import generateFileUri from '../utils/generateFileUri';
 import getLastCommitMessage from '../utils/getLastCommitMessage';
 import getNonce from '../utils/nonce';
@@ -21,13 +20,7 @@ export class QuickTimeEntryProvider implements vscode.WebviewViewProvider {
 
   private _view?: vscode.WebviewView;
 
-  private _cooperWorkflow: CoopersystemWorkflow;
-
-  constructor(private readonly _extensionUri: vscode.Uri) {
-    const config = vscode.workspace.getConfiguration('coopersystem', this._extensionUri) as CoopersystemWorkflowConfig;
-
-    this._cooperWorkflow = CoopersystemWorkflowFactory.coWorker(config.ldap);
-  }
+  constructor(private readonly _extensionUri: vscode.Uri, private readonly _cooperWorkflow: CoopersystemWorkflow) {}
 
   public clearState() {
     this._updateState(this._initialState);

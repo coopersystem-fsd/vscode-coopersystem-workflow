@@ -76,6 +76,18 @@
         "coopersystem.ldap.password": {
           "type": "string",
           "description": "Your LDAP password"
+        },
+        "coopersystem.userType": {
+          "type": "string",
+          "default": "coWorker",
+          "enum": [
+            "coWorker",
+            "intern"
+          ],
+          "enumDescriptions": [
+            "Define user as CoWorker",
+            "Define user as Intern"
+          ]
         }
       }
     }
