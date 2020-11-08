@@ -5,12 +5,15 @@ function convertDateToHours(date: Date) {
   return date.getHours() + date.getMinutes() / 60;
 }
 
+function isWorking(entries: Date[]) {
+  return entries.length % 2 > 0;
+}
+
 function getWorkedHoursToday(entries: Date[]) : number {
   if(entries.length === 0) {
     return 0;
   }
-  const isOdd = entries.length % 2 > 0;
-  if(isOdd) {
+  if(isWorking(entries)) {
     entries.push(new Date(Date.now()));
   }
   return entries.reduce((prev, next) => Math.abs(prev - convertDateToHours(next)), 0);
@@ -49,9 +52,11 @@ export function updateStatusBarItem(
 
   updateTime(timestamp, myStatusBarItem);
 
-  timer = setInterval(() => {
-    timestamp += 60000;
-    updateTime(timestamp, myStatusBarItem);
-  }, 60000);
+  if(isWorking(allocationState.entries)) {
+    timer = setInterval(() => {
+      timestamp += 60000;
+      updateTime(timestamp, myStatusBarItem);
+    }, 60000);
+  }
 
 }
