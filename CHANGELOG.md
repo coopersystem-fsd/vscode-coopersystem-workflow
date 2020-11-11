@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [0.3.2] - 2020-11-11
+### Fixed
+- Error calculating the issue worked time after reload the quick time entry view
+
 ## [0.3.1] - 2020-11-08
 ### Fixed
 - StatusBar: Removed counting time while on break
